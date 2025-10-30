@@ -59,5 +59,3 @@ export const createProduct = async ({ name, price, isInStock }, token) => {
   }
   return response.json();
 };
-
-

@@ -17,11 +17,10 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
-  const value = useMemo(() => ({ isAuthenticated, handleLoginSuccess, handleLogout }),
+  const value = useMemo(
+    () => ({ isAuthenticated, handleLoginSuccess, handleLogout }),
     [isAuthenticated],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-
-

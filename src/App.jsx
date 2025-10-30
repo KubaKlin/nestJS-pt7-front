@@ -1,5 +1,5 @@
-import { AuthProvider } from './AuthContext.jsx';
-import AppContent from './components/AppContent.jsx';
+import { AuthProvider } from './AuthContext';
+import AppContent from './components/AppContent';
 
 const App = () => {
   return (
