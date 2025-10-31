@@ -1,10 +1,11 @@
 const API_BASE_URL = 'http://localhost:3040';
+const headers = { 'Content-Type': 'application/json' };
 
 export const getProducts = async () => {
   const response = await fetch(`${API_BASE_URL}/products`, {
     method: 'GET',
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
   });
   if (!response.ok) {
     throw new Error('Failed to fetch products');
@@ -16,7 +17,7 @@ export const signup = async ({ name, email, password }) => {
   const response = await fetch(`${API_BASE_URL}/authentication/sign-up`, {
     method: 'POST',
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({ name, email, password }),
   });
   if (!response.ok) {
@@ -30,7 +31,7 @@ export const login = async ({ email, password }) => {
   const response = await fetch(`${API_BASE_URL}/authentication/log-in`, {
     method: 'POST',
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({ email, password }),
   });
   if (!response.ok) {
@@ -43,7 +44,6 @@ export const login = async ({ email, password }) => {
 };
 
 export const createProduct = async ({ name, price, isInStock }, token) => {
-  const headers = { 'Content-Type': 'application/json' };
   if (token) {
     headers.Authorization = `${token}`;
   }

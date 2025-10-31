@@ -56,10 +56,7 @@ const Login = () => {
             onChange={(event) => setPassword(event.target.value)}
             required
           />
-          <Button
-            type="submit"
-            variant="contained"
-          >
+          <Button type="submit" variant="contained">
             Log In
           </Button>
         </Stack>

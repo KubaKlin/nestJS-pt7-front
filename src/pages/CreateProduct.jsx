@@ -72,10 +72,7 @@ const CreateProduct = () => {
             }
             label="In Stock"
           />
-          <Button
-            type="submit"
-            variant="contained"
-          >
+          <Button type="submit" variant="contained">
             Create
           </Button>
         </Stack>
