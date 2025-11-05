@@ -6,6 +6,7 @@ import SignUp from '../pages/SignUp';
 import Login from '../pages/Login';
 import CreateProduct from '../pages/CreateProduct';
 import PrivateRoute from './PrivateRoute';
+import PublicRoute from './PublicRoute';
 
 const AppContent = () => {
   return (
@@ -15,8 +16,22 @@ const AppContent = () => {
         <Box mt={4}>
           <Routes>
             <Route path="/" element={<Products />} />
-            <Route path="/sign-up" element={<SignUp />} />
-            <Route path="/login" element={<Login />} />
+            <Route
+              path="/sign-up"
+              element={
+                <PublicRoute>
+                  <SignUp />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              }
+            />
             <Route
               path="/create-product"
               element={
