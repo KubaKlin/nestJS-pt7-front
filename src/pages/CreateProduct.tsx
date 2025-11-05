@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
-import { createProduct } from '../api.js';
+import type { ChangeEvent, FormEvent } from 'react';
+import { createProduct } from '../api';
 import { AuthContext } from '../AuthContext';
 import {
   TextField,
@@ -16,12 +17,12 @@ import { useNavigate } from 'react-router-dom';
 const CreateProduct = () => {
   const navigate = useNavigate();
   const { token } = useContext(AuthContext);
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [isInStock, setIsInStock] = useState(true);
-  const [error, setError] = useState(null);
+  const [name, setName] = useState<string>('');
+  const [price, setPrice] = useState<string>('');
+  const [isInStock, setIsInStock] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
     if (!name || !price) {
@@ -31,10 +32,11 @@ const CreateProduct = () => {
     const numericPrice = Number(price);
 
     try {
-      await createProduct({ name, price: numericPrice, isInStock }, token);
+      await createProduct({ name, price: numericPrice, isInStock }, token || null);
       navigate('/');
-    } catch (event) {
-      setError(event.message || 'Create product failed');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Create product failed';
+      setError(errorMessage);
     }
   };
 
@@ -53,21 +55,21 @@ const CreateProduct = () => {
           <TextField
             label="Name"
             value={name}
-            onChange={(event) => setName(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event.target.value)}
             required
           />
           <TextField
             label="Price"
             type="number"
             value={price}
-            onChange={(event) => setPrice(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => setPrice(event.target.value)}
             required
           />
           <FormControlLabel
             control={
               <Checkbox
                 checked={isInStock}
-                onChange={(event) => setIsInStock(event.target.checked)}
+                onChange={(event: ChangeEvent<HTMLInputElement>, checked: boolean) => setIsInStock(checked)}
               />
             }
             label="In Stock"

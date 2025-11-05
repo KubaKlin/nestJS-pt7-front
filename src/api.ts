@@ -1,7 +1,35 @@
 const API_BASE_URL = 'http://localhost:3040';
-const headers = { 'Content-Type': 'application/json' };
+const headers: Record<string, string> = { 'Content-Type': 'application/json' };
 
-export const getProducts = async () => {
+interface SignupParams {
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface LoginParams {
+  email: string;
+  password: string;
+}
+
+interface LoginResponse {
+  data: Record<string, unknown>;
+  token: string | null;
+}
+
+interface CreateProductParams {
+  name: string;
+  price: number;
+  isInStock: boolean;
+}
+
+interface Product {
+  name: string;
+  price: number;
+  isInStock: boolean;
+}
+
+export const getProducts = async (): Promise<Product[]> => {
   const response = await fetch(`${API_BASE_URL}/products`, {
     method: 'GET',
     credentials: 'include',
@@ -13,7 +41,7 @@ export const getProducts = async () => {
   return response.json();
 };
 
-export const signup = async ({ name, email, password }) => {
+export const signup = async ({ name, email, password }: SignupParams): Promise<Record<string, unknown>> => {
   const response = await fetch(`${API_BASE_URL}/authentication/sign-up`, {
     method: 'POST',
     credentials: 'include',
@@ -27,7 +55,7 @@ export const signup = async ({ name, email, password }) => {
   return response.json().catch(() => ({}));
 };
 
-export const login = async ({ email, password }) => {
+export const login = async ({ email, password }: LoginParams): Promise<LoginResponse> => {
   const response = await fetch(`${API_BASE_URL}/authentication/log-in`, {
     method: 'POST',
     credentials: 'include',
@@ -43,14 +71,15 @@ export const login = async ({ email, password }) => {
   return { data, token };
 };
 
-export const createProduct = async ({ name, price, isInStock }, token) => {
+export const createProduct = async ({ name, price, isInStock }: CreateProductParams, token: string | null): Promise<Product> => {
+  const requestHeaders = { ...headers };
   if (token) {
-    headers.Authorization = `${token}`;
+    requestHeaders.Authorization = `${token}`;
   }
   const response = await fetch(`${API_BASE_URL}/products`, {
     method: 'POST',
     credentials: 'include',
-    headers,
+    headers: requestHeaders,
     body: JSON.stringify({ name, price, isInStock }),
   });
   if (!response.ok) {
@@ -59,3 +88,4 @@ export const createProduct = async ({ name, price, isInStock }, token) => {
   }
   return response.json();
 };
+
