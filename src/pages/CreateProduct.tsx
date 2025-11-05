@@ -78,7 +78,7 @@ const CreateProduct = () => {
               <Checkbox
                 checked={isInStock}
                 onChange={(
-                  event: ChangeEvent<HTMLInputElement>,
+                  _event: ChangeEvent<HTMLInputElement>,
                   checked: boolean,
                 ) => setIsInStock(checked)}
               />
