@@ -1,6 +1,14 @@
 const API_BASE_URL = 'http://localhost:3040';
 const headers: Record<string, string> = { 'Content-Type': 'application/json' };
 
+const parseJsonSafely = async (response: Response): Promise<Record<string, unknown>> => {
+  try {
+    return await response.json();
+  } catch {
+    return {};
+  }
+};
+
 interface SignupParams {
   name: string;
   email: string;
@@ -52,7 +60,7 @@ export const signup = async ({ name, email, password }: SignupParams): Promise<R
     const text = await response.text();
     throw new Error(text || 'Failed to sign up');
   }
-  return response.json().catch(() => ({}));
+  return parseJsonSafely(response);
 };
 
 export const login = async ({ email, password }: LoginParams): Promise<LoginResponse> => {
@@ -66,8 +74,8 @@ export const login = async ({ email, password }: LoginParams): Promise<LoginResp
     const text = await response.text();
     throw new Error(text || 'Failed to log in');
   }
-  const data = await response.json().catch(() => ({}));
-  const token = data.token || data.accessToken || data.access_token || null;
+  const data = await parseJsonSafely(response);
+  const token = (typeof data.token === 'string' ? data.token : null)
   return { data, token };
 };
 
