@@ -32,10 +32,14 @@ const CreateProduct = () => {
     const numericPrice = Number(price);
 
     try {
-      await createProduct({ name, price: numericPrice, isInStock }, token || null);
+      await createProduct(
+        { name, price: numericPrice, isInStock },
+        token || null,
+      );
       navigate('/');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Create product failed';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Create product failed';
       setError(errorMessage);
     }
   };
@@ -55,21 +59,28 @@ const CreateProduct = () => {
           <TextField
             label="Name"
             value={name}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setName(event.target.value)
+            }
             required
           />
           <TextField
             label="Price"
             type="number"
             value={price}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setPrice(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setPrice(event.target.value)
+            }
             required
           />
           <FormControlLabel
             control={
               <Checkbox
                 checked={isInStock}
-                onChange={(event: ChangeEvent<HTMLInputElement>, checked: boolean) => setIsInStock(checked)}
+                onChange={(
+                  event: ChangeEvent<HTMLInputElement>,
+                  checked: boolean,
+                ) => setIsInStock(checked)}
               />
             }
             label="In Stock"

@@ -1,7 +1,9 @@
 const API_BASE_URL = 'http://localhost:3040';
 const headers: Record<string, string> = { 'Content-Type': 'application/json' };
 
-const parseJsonSafely = async (response: Response): Promise<Record<string, unknown>> => {
+const parseJsonSafely = async (
+  response: Response,
+): Promise<Record<string, unknown>> => {
   try {
     return await response.json();
   } catch {
@@ -49,7 +51,11 @@ export const getProducts = async (): Promise<Product[]> => {
   return response.json();
 };
 
-export const signup = async ({ name, email, password }: SignupParams): Promise<Record<string, unknown>> => {
+export const signup = async ({
+  name,
+  email,
+  password,
+}: SignupParams): Promise<Record<string, unknown>> => {
   const response = await fetch(`${API_BASE_URL}/authentication/sign-up`, {
     method: 'POST',
     credentials: 'include',
@@ -63,7 +69,10 @@ export const signup = async ({ name, email, password }: SignupParams): Promise<R
   return parseJsonSafely(response);
 };
 
-export const login = async ({ email, password }: LoginParams): Promise<LoginResponse> => {
+export const login = async ({
+  email,
+  password,
+}: LoginParams): Promise<LoginResponse> => {
   const response = await fetch(`${API_BASE_URL}/authentication/log-in`, {
     method: 'POST',
     credentials: 'include',
@@ -75,11 +84,14 @@ export const login = async ({ email, password }: LoginParams): Promise<LoginResp
     throw new Error(text || 'Failed to log in');
   }
   const data = await parseJsonSafely(response);
-  const token = (typeof data.token === 'string' ? data.token : null)
+  const token = typeof data.token === 'string' ? data.token : null;
   return { data, token };
 };
 
-export const createProduct = async ({ name, price, isInStock }: CreateProductParams, token: string | null): Promise<Product> => {
+export const createProduct = async (
+  { name, price, isInStock }: CreateProductParams,
+  token: string | null,
+): Promise<Product> => {
   const requestHeaders = { ...headers };
   if (token) {
     requestHeaders.Authorization = `${token}`;
@@ -96,4 +108,3 @@ export const createProduct = async ({ name, price, isInStock }: CreateProductPar
   }
   return response.json();
 };
-

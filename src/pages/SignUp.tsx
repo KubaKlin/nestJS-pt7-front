@@ -25,7 +25,8 @@ const SignUp = () => {
       await signup({ name, email, password });
       navigate('/login');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Sign-up failed';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Sign-up failed';
       setError(errorMessage);
     }
   };
@@ -45,21 +46,27 @@ const SignUp = () => {
           <TextField
             label="Name"
             value={name}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setName(event.target.value)
+            }
             required
           />
           <TextField
             label="Email"
             type="email"
             value={email}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setEmail(event.target.value)
+            }
             required
           />
           <TextField
             label="Password"
             type="password"
             value={password}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setPassword(event.target.value)
+            }
             required
           />
           <Button type="submit" variant="contained">

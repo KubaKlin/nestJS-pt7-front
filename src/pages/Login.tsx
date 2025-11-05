@@ -27,7 +27,8 @@ const Login = () => {
       handleLoginSuccess(token);
       navigate('/');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Login failed';
       setError(errorMessage);
     }
   };
@@ -48,14 +49,18 @@ const Login = () => {
             label="Email"
             type="email"
             value={email}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setEmail(event.target.value)
+            }
             required
           />
           <TextField
             label="Password"
             type="password"
             value={password}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setPassword(event.target.value)
+            }
             required
           />
           <Button type="submit" variant="contained">
