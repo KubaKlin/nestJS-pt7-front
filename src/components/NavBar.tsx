@@ -1,16 +1,19 @@
-import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, Button } from '@mui/material';
-import { AuthContext } from '../AuthContext';
+import { AppBar, Toolbar, Button, Box } from '@mui/material';
+import { useAuth } from '../hooks/useAuth';
 
 const NavBar = () => {
-  const { isAuthenticated, handleLogout } = useContext(AuthContext);
+  const { isAuthenticated, handleLogout } = useAuth();
+
   return (
     <AppBar position="static">
       <Toolbar>
         <Button color="inherit" component={Link} to="/">
           Products
         </Button>
+
+        <Box sx={{ flexGrow: 1 }} />
+
         {isAuthenticated ? (
           <>
             <Button color="inherit" component={Link} to="/create-product">
