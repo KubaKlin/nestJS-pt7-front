@@ -1,105 +1,91 @@
 import { createContext, useMemo, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-
-const AUTH_TOKEN_KEY = 'auth_token';
-const AUTH_STATE_KEY = 'is_authenticated';
+import { getCurrentUser, logout as logoutApi } from './api';
+import type { User } from './types';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  handleLoginSuccess: (authToken?: string | null) => void;
-  handleLogout: () => void;
-  token: string | null;
+  user: User | null;
+  isLoading: boolean;
+  handleLoginSuccess: (user: User) => void;
+  handleLogout: () => Promise<void>;
+  refreshAuth: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
+  user: null,
+  isLoading: true,
   handleLoginSuccess: () => {},
-  handleLogout: () => {},
-  token: null,
+  handleLogout: async () => {},
+  refreshAuth: async () => {},
 });
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-const getStoredToken = (): string | null => {
-  try {
-    return localStorage.getItem(AUTH_TOKEN_KEY);
-  } catch {
-    return null;
-  }
-};
-
-const getStoredAuthState = (): boolean => {
-  try {
-    return localStorage.getItem(AUTH_STATE_KEY) === 'true';
-  } catch {
-    return false;
-  }
-};
-
-const setStoredToken = (token: string): void => {
-  try {
-    localStorage.setItem(AUTH_TOKEN_KEY, token);
-  } catch {
-    console.error('Failed to store authentication token');
-  }
-};
-
-const setStoredAuthState = (isAuthenticated: boolean): void => {
-  try {
-    localStorage.setItem(AUTH_STATE_KEY, String(isAuthenticated));
-  } catch {
-    console.error('Failed to store authentication state');
-  }
-};
-
-const removeStoredToken = (): void => {
-  try {
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-    localStorage.removeItem(AUTH_STATE_KEY);
-  } catch {
-    console.error('Failed to remove authentication token');
-  }
-};
-
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Initialize auth state from localStorage on mount
+  // Initialize auth state by checking with backend on mount
   useEffect(() => {
-    const storedToken = getStoredToken();
-    const storedAuthState = getStoredAuthState();
+    const initializeAuth = async () => {
+      try {
+        const currentUser = await getCurrentUser();
+        setUser(currentUser);
+        setIsAuthenticated(true);
+      } catch {
+        // User is not authenticated
+        setUser(null);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    if (storedAuthState) {
-      setIsAuthenticated(true);
-    }
-
-    if (storedToken) {
-      setToken(storedToken);
-    }
+    initializeAuth();
   }, []);
 
-  const handleLoginSuccess = (authToken?: string | null) => {
+  const handleLoginSuccess = (userData: User) => {
+    setUser(userData);
     setIsAuthenticated(true);
-    setStoredAuthState(true);
+  };
 
-    if (authToken) {
-      setToken(authToken);
-      setStoredToken(authToken);
+  const handleLogout = async () => {
+    try {
+      await logoutApi();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
     }
   };
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setToken(null);
-    removeStoredToken();
+  const refreshAuth = async () => {
+    try {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+      setIsAuthenticated(true);
+    } catch {
+      setUser(null);
+      setIsAuthenticated(false);
+    }
   };
 
   const value = useMemo(
-    () => ({ isAuthenticated, handleLoginSuccess, handleLogout, token }),
-    [isAuthenticated, token],
+    () => ({
+      isAuthenticated,
+      user,
+      isLoading,
+      handleLoginSuccess,
+      handleLogout,
+      refreshAuth,
+    }),
+    [isAuthenticated, user, isLoading],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -12,11 +12,9 @@ import {
   Checkbox,
 } from '@mui/material';
 import { createProduct } from '../api';
-import { useAuth } from '../hooks/useAuth';
 
 const CreateProduct = () => {
   const navigate = useNavigate();
-  const { token } = useAuth();
   const [name, setName] = useState<string>('');
   const [price, setPrice] = useState<string>('');
   const [isInStock, setIsInStock] = useState<boolean>(true);
@@ -56,7 +54,7 @@ const CreateProduct = () => {
     setIsLoading(true);
 
     try {
-      await createProduct({ name, price: numericPrice, isInStock }, token);
+      await createProduct({ name, price: numericPrice, isInStock });
       navigate('/');
     } catch (error) {
       const errorMessage =

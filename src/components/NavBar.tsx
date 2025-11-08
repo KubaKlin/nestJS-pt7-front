@@ -1,9 +1,15 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Button, Box } from '@mui/material';
 import { useAuth } from '../hooks/useAuth';
 
 const NavBar = () => {
+  const navigate = useNavigate();
   const { isAuthenticated, handleLogout } = useAuth();
+
+  const handleLogoutClick = async () => {
+    await handleLogout();
+    navigate('/login');
+  };
 
   return (
     <AppBar position="static">
@@ -19,7 +25,7 @@ const NavBar = () => {
             <Button color="inherit" component={Link} to="/create-product">
               Create Product
             </Button>
-            <Button color="inherit" onClick={handleLogout}>
+            <Button color="inherit" onClick={handleLogoutClick}>
               Logout
             </Button>
           </>

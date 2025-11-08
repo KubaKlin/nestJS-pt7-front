@@ -1,8 +1,14 @@
 export interface Product {
-  id?: string;
+  id?: number;
   name: string;
   price: number;
   isInStock: boolean;
+}
+
+export interface User {
+  id: number;
+  email: string;
+  name: string;
 }
 
 export interface SignupParams {
@@ -14,11 +20,6 @@ export interface SignupParams {
 export interface LoginParams {
   email: string;
   password: string;
-}
-
-export interface LoginResponse {
-  data: Record<string, unknown>;
-  token: string | null;
 }
 
 export interface CreateProductParams {

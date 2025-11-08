@@ -34,10 +34,8 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await login({ email, password });
-      console.log('Login response:', response);
-
-      handleLoginSuccess(response.token);
+      const user = await login({ email, password });
+      handleLoginSuccess(user);
       navigate('/');
     } catch (error) {
       const errorMessage =

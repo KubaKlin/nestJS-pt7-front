@@ -1,8 +1,8 @@
 import type {
   Product,
+  User,
   SignupParams,
   LoginParams,
-  LoginResponse,
   CreateProductParams,
 } from './types';
 
@@ -10,24 +10,6 @@ const API_BASE_URL = 'http://localhost:3040';
 
 const DEFAULT_HEADERS: Record<string, string> = {
   'Content-Type': 'application/json',
-};
-
-const parseJsonSafely = async (
-  response: Response,
-): Promise<Record<string, unknown>> => {
-  try {
-    return await response.json();
-  } catch {
-    return {};
-  }
-};
-
-const createAuthHeaders = (token: string | null): Record<string, string> => {
-  const headers = { ...DEFAULT_HEADERS };
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-  return headers;
 };
 
 export const getProducts = async (): Promise<Product[]> => {
@@ -48,7 +30,7 @@ export const signup = async ({
   name,
   email,
   password,
-}: SignupParams): Promise<Record<string, unknown>> => {
+}: SignupParams): Promise<User> => {
   const response = await fetch(`${API_BASE_URL}/authentication/sign-up`, {
     method: 'POST',
     credentials: 'include',
@@ -61,13 +43,13 @@ export const signup = async ({
     throw new Error(text || 'Failed to sign up');
   }
 
-  return parseJsonSafely(response);
+  return response.json();
 };
 
 export const login = async ({
   email,
   password,
-}: LoginParams): Promise<LoginResponse> => {
+}: LoginParams): Promise<User> => {
   const response = await fetch(`${API_BASE_URL}/authentication/log-in`, {
     method: 'POST',
     credentials: 'include',
@@ -80,20 +62,44 @@ export const login = async ({
     throw new Error(text || 'Failed to log in');
   }
 
-  const data = await parseJsonSafely(response);
-  const token = typeof data.token === 'string' ? data.token : null;
-
-  return { data, token };
+  return response.json();
 };
 
-export const createProduct = async (
-  { name, price, isInStock }: CreateProductParams,
-  token: string | null,
-): Promise<Product> => {
+export const getCurrentUser = async (): Promise<User> => {
+  const response = await fetch(`${API_BASE_URL}/authentication`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: DEFAULT_HEADERS,
+  });
+
+  if (!response.ok) {
+    throw new Error('Not authenticated');
+  }
+
+  return response.json();
+};
+
+export const logout = async (): Promise<void> => {
+  const response = await fetch(`${API_BASE_URL}/authentication/log-out`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: DEFAULT_HEADERS,
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to log out');
+  }
+};
+
+export const createProduct = async ({
+  name,
+  price,
+  isInStock,
+}: CreateProductParams): Promise<Product> => {
   const response = await fetch(`${API_BASE_URL}/products`, {
     method: 'POST',
     credentials: 'include',
-    headers: createAuthHeaders(token),
+    headers: DEFAULT_HEADERS,
     body: JSON.stringify({ name, price, isInStock }),
   });
 
