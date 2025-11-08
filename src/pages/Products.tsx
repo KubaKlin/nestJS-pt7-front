@@ -24,7 +24,7 @@ const Products = () => {
 
       try {
         const data = await getProducts();
-        setProducts(Array.isArray(data) ? data : []);
+        setProducts(data);
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : 'Error loading products';
