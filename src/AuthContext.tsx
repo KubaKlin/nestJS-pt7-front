@@ -91,7 +91,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       handleLogout,
       refreshAuth,
     }),
-    [isAuthenticated, user, isLoading, handleLoginSuccess, handleLogout, refreshAuth],
+    [
+      isAuthenticated,
+      user,
+      isLoading,
+      handleLoginSuccess,
+      handleLogout,
+      refreshAuth,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
