@@ -6,7 +6,7 @@ import type {
   CreateProductParams,
 } from './types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3040';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const DEFAULT_HEADERS: Record<string, string> = {
   'Content-Type': 'application/json',
