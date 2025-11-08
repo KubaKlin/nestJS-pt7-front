@@ -1,13 +1,12 @@
-import './App.css';
+import { AuthProvider } from './AuthContext';
+import AppContent from './components/AppContent';
 
-function App() {
+const App = () => {
   return (
-    <>
-      <div></div>
-      <h1>Vite + React + NestJs + Cors</h1>
-      <div className="card"></div>
-    </>
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
-}
+};
 
 export default App;
