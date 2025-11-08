@@ -1,4 +1,10 @@
-import { createContext, useMemo, useState, useEffect } from 'react';
+import {
+  createContext,
+  useMemo,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import type { ReactNode } from 'react';
 import { getCurrentUser, logout as logoutApi } from './api';
 import type { User } from './types';
@@ -49,12 +55,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     initializeAuth();
   }, []);
 
-  const handleLoginSuccess = (userData: User) => {
+  const handleLoginSuccess = useCallback((userData: User) => {
     setUser(userData);
     setIsAuthenticated(true);
-  };
+  }, []);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       await logoutApi();
     } catch (error) {
@@ -63,9 +69,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(null);
       setIsAuthenticated(false);
     }
-  };
+  }, []);
 
-  const refreshAuth = async () => {
+  const refreshAuth = useCallback(async () => {
     try {
       const currentUser = await getCurrentUser();
       setUser(currentUser);
@@ -74,7 +80,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(null);
       setIsAuthenticated(false);
     }
-  };
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -85,7 +91,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       handleLogout,
       refreshAuth,
     }),
-    [isAuthenticated, user, isLoading],
+    [isAuthenticated, user, isLoading, handleLoginSuccess, handleLogout, refreshAuth],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
